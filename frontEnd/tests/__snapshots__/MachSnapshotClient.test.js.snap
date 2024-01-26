@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly Configurações  1`] = `[Function]`;
+
+exports[`renders correctly Forms  1`] = `[Function]`;
+
+exports[`renders correctly ListAssistenciaTecnica  1`] = `[Function]`;
+
+exports[`renders correctly ListAutomoveis  1`] = `[Function]`;
+
+exports[`renders correctly ListEventos  1`] = `[Function]`;
+
+exports[`renders correctly ListModaBeleza  1`] = `[Function]`;
+
+exports[`renders correctly ListReformasReparos  1`] = `[Function]`;
