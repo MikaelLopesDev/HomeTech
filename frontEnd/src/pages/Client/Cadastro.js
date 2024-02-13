@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import Checkbox from "../../components/checkbox";
-import { Dimensions } from 'react-native';
-
-import {
-  View,
-  Text, 
-  TextInput,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-ScrollView,
-} from "react-native";
+import { Dimensions, View, Text, TextInput, SafeAreaView, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView } from "react-native";
 import { api } from "../../api/api";
 
 const { width, height } = Dimensions.get('window');
 
 
 export default function Cadastro({ navigation }) {
+
   const [view, setView] = useState(1);
   const [checked, setChecked] = useState(false);
   const [pessoa, setPessoa] = useState("");

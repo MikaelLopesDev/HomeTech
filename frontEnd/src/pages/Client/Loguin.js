@@ -12,6 +12,38 @@ export default function Login({ navigation }) {
     setPasswordVisibility(!passwordVisibility);
   };
 
+  const handleLogin = async () => {
+
+    console.log("Tentativa de login com:", { email: email, password: password });
+    {/*  
+    try {
+      const response = await fetch('http://18.188.75.46:8080/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || 'Erro ao efetuar login');
+      }
+  
+      // Aqui você trata a resposta da API, como armazenar tokens de autenticação, etc.
+  
+      // Navegação ocorre apenas se o login for bem-sucedido
+      navigation.navigate("TabRoutesClient");
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      Alert.alert("Erro", "Não foi possível fazer o login. Verifique suas credenciais e tente novamente.");
+    }*/}
+    navigation.navigate("TabRoutesClient");
+  };
   return (
     <SafeAreaView style={styles.container}>
       {Platform.OS === "android" && <StatusBar backgroundColor="#FFF" />}
@@ -58,9 +90,9 @@ export default function Login({ navigation }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("TabRoutesClient")}>
-            <Text style={styles.buttonLoginText}>Confirmar</Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
+  <Text style={styles.buttonLoginText}>Confirmar</Text>
+</TouchableOpacity>
         </View>
 
         {onFocus && (

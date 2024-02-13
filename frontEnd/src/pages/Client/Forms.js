@@ -49,39 +49,32 @@ export default function Forms({ navigation }) {
     
     async function handleNew() {
       try {
-        await AsyncStorage.setItem("@saveforms:service", service);
-        await AsyncStorage.setItem("@saveforms:marca", marca);
-        await AsyncStorage.setItem("@saveforms:garantia", garantia);
-        await AsyncStorage.setItem("@saveforms:problema", problema);
-        await AsyncStorage.setItem("@saveforms:informacoeasAdicionais", informacoeasAdicionais);
-        await AsyncStorage.setItem("@saveforms:hour", JSON.stringify(selectedHour));
-        await AsyncStorage.setItem("@saveforms:day", JSON.stringify(selectedDay));
-        await AsyncStorage.setItem("@saveforms:month", JSON.stringify(selectedMonth));
-        await AsyncStorage.setItem("@saveforms:year", JSON.stringify(selectedYear));
+        const newService = {
+          service,
+          marca,
+          garantia,
+          problema,
+          informacoeasAdicionais,
+          selectedHour,
+          selectedDay,
+          selectedMonth,
+          selectedYear,
+          status: 'Aguardando Técnico' // Status inicial
+        };
+    
+        const existingServices = await AsyncStorage.getItem('@saveforms:services');
+        const services = existingServices ? JSON.parse(existingServices) : [];
+        services.push(newService);
+    
+        await AsyncStorage.setItem('@saveforms:services', JSON.stringify(services));
     
         // Feedback de sucesso
-        Alert.alert(
-          "Sucesso",
-          "Seu formulário foi enviado com sucesso!",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                
-                navigation.navigate('TabRoutesClient'); 
-              }
-            }
-          ]
-        );
+        Alert.alert("Sucesso", "Seu formulário foi enviado com sucesso!", [
+          { text: "OK", onPress: () => navigation.navigate('TabRoutesClient') }
+        ]);
       } catch (error) {
         // Feedback de erro
-        Alert.alert(
-          "Erro",
-          "Houve um problema ao enviar o formulário. Tente novamente.",
-          [
-            { text: "OK" }
-          ]
-        );
+        Alert.alert("Erro", "Houve um problema ao enviar o formulário. Tente novamente.", [{ text: "OK" }]);
       }
     }
     

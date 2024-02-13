@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function TelaDeInicio({navigation}) {
+
+	useEffect(() => {
+        async function limparMemoria() {
+            try {
+                await AsyncStorage.clear();  // Limpa toda a memória AsyncStorage
+                console.log('Memória limpa com sucesso!');
+            } catch (e) {
+                console.error('Erro ao limpar a memória do AsyncStorage:', e);
+            }
+        }
+
+        limparMemoria();
+    }, []);
 	return (
 		<View style={styles.container}>
 			<View style={styles.containerBalck}>
