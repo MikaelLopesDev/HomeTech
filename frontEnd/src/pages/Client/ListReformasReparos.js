@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image,FlatList,TouchableOpacity, SafeAreaView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import React, { useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export default function ListAssitenciaTecnica({ navigation }) {
+  const [selectedId, setSelectedId] = useState(null);
 
-
-
-export default function ListAssitenciaTecnica({navigation}) {
-
-  const [service, setService] = useState("");
-
-  async function handleNew(){
- 
-    await AsyncStorage.setItem("@saveservice:chooosed", service);
-    
-   }
+  async function handleNew(selectedService) {
+    await AsyncStorage.setItem("@saveservice:chooosed", selectedService);
+  }
 
  const assistenciaTecnicaList = [
 
@@ -156,128 +150,106 @@ export default function ListAssitenciaTecnica({navigation}) {
                                       
 
  ]
+ const onPressItem = (id) => {
+  setSelectedId(id);
+};
 
- let onPressItem = (name) => {
-
-  setService(name)
-
-  
-  
- }
-
- const oneService = ( {item} ) => (
-  
-    <TouchableOpacity  onPress={() => onPressItem(item.name)}>
-  <View style = {styles.item}>
-  <Text style = {styles.name}>{item.name}</Text>
-  </View>
+const oneService = ({ item }) => (
+  <TouchableOpacity onPress={() => onPressItem(item.id)}>
+    <View style={[styles.item, selectedId === item.id && styles.selectedItem]}>
+      <Text style={styles.name}>{item.name}</Text>
+    </View>
   </TouchableOpacity>
-  )
-  
+);
 
+const headerComponent = () => {
+  return <Text style={styles.lisHeadline}>Serviços Assistência Técnica</Text>;
+};
 
+const itemSeparator = () => {
+  return <View style={styles.separator} />;
+};
 
+return (
+  <SafeAreaView>
+    <FlatList
+      ListHeaderComponentStyle={styles.listHeader}
+      ListHeaderComponent={headerComponent}
+      data={assistenciaTecnicaList}
+      renderItem={oneService}
+      ItemSeparatorComponent={itemSeparator}
+      keyExtractor={item => item.id.toString()}
+    />
 
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          const selectedService = assistenciaTecnicaList.find(item => item.id === selectedId)?.name;
+          if (selectedService) {
+            handleNew(selectedService);
+            console.log(selectedService);
+            navigation.navigate('Forms');
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>Confirmar</Text>
+      </TouchableOpacity>
+    </View>
+  </SafeAreaView>
+);
+}
 
-  headerComponent = () => {
-
-    return <Text style = {styles.lisHeadline}>Serviços Assistência Técnica</Text>
-  }
-  
-  itemSeparator = () => {
-    return <View style = {styles.separator} />
-  }
-  
-    return (
-      <SafeAreaView >
-       
-        <FlatList
-        ListHeaderComponentStyle = {styles.listHeader}
-        ListHeaderComponent={headerComponent}
-       data = {assistenciaTecnicaList}
-       renderItem = {oneService} 
-       
-       ItemSeparatorComponent = {itemSeparator}
-      
-     
-       />
-
-
-<View
-                style={{
-                  width: "90%",
-                  alignSelf: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 30,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    handleNew()
-                    console.log(service)
-                    navigation.navigate('Forms')
-                  }}
-                >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    confirmar
-                  </Text>
-                </TouchableOpacity>
-                
-              </View>
-        </SafeAreaView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    listHeader:{
-   height: 70,
-   alignItems: 'center',
-   justifyContent: 'center',
-   backgroundColor: '#3B5998',
-   
-    },
-   lisHeadline:{
+const styles = StyleSheet.create({
+listHeader: {
+  height: 70,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#3B5998',
+},
+lisHeadline: {
   color: '#FFF',
   fontSize: 21,
   fontWeight: 'bold',
-  
-  
-  
-   },
-   item:{
+},
+item: {
   flex: 1,
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: 10,
-
-  
-   },
-  
-   name:{
+},
+selectedItem: {
+  backgroundColor: '#3B5998', // Cor quando o item é selecionado
+},
+name: {
   fontWeight: 'bold',
-  fontSize:18,
+  fontSize: 18,
   marginLeft: 15,
-  
-   },
-  
-    separator: {
-      height: 1,
-      backgroundColor: '#FFF',
-      width: '100%',
-      
-    }, 
-    button: {
-      height: 38,
-      width: 105,
-      flex:1,
-      backgroundColor: "#3B5998",
-      borderRadius: 15,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-  });
-  
+},
+separator: {
+  height: 1,
+  backgroundColor: '#FFF',
+  width: '100%',
+},
+buttonContainer: {
+  width: "90%",
+  alignSelf: "center",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 30,
+},
+button: {
+  height: 38,
+  width: 105,
+  flex: 1,
+  backgroundColor: "#3B5998",
+  borderRadius: 15,
+  alignItems: "center",
+  justifyContent: "center",
+},
+buttonText: {
+  color: "white",
+  fontSize: 20,
+  fontWeight: "700",
+},
+});

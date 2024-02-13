@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text,FlatList, View,TextInput ,Alert ,Image,ScrollView,TouchableOpacity, SafeAreaView ,Button} from 'react-native';
+import { StyleSheet, Text, View,TextInput ,Alert ,ScrollView,TouchableOpacity, SafeAreaView ,Button} from 'react-native';
 import NavPrevIcon from '../../assets/nav_prev.svg';
 import NavNextIcon from '../../assets/nav_next.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -13,7 +13,7 @@ import {
 
 
 
-export default function Forms(navigation) {
+export default function Forms({ navigation }) {
   
   const[service,setService] = useState("");
 
@@ -47,19 +47,44 @@ export default function Forms(navigation) {
 
 
     
-    async function handleNew(){
-      await AsyncStorage.setItem("@saveforms:service", service);
-   await AsyncStorage.setItem("@saveforms:marca", marca);
-   await AsyncStorage.setItem("@saveforms:garantia", garantia);
-   await AsyncStorage.setItem("@saveforms:problema", problema);
-   await AsyncStorage.setItem("@saveforms:informacoeasAdicionais", informacoeasAdicionais);
-   await AsyncStorage.setItem("@saveforms:hour", JSON.stringify(selectedHour));
-   await AsyncStorage.setItem("@saveforms:day", JSON.stringify(selectedDay));
-   await AsyncStorage.setItem("@saveforms:month", JSON.stringify(selectedMonth));
-   await AsyncStorage.setItem("@saveforms:year", JSON.stringify(selectedYear));
-
-  
-  }
+    async function handleNew() {
+      try {
+        await AsyncStorage.setItem("@saveforms:service", service);
+        await AsyncStorage.setItem("@saveforms:marca", marca);
+        await AsyncStorage.setItem("@saveforms:garantia", garantia);
+        await AsyncStorage.setItem("@saveforms:problema", problema);
+        await AsyncStorage.setItem("@saveforms:informacoeasAdicionais", informacoeasAdicionais);
+        await AsyncStorage.setItem("@saveforms:hour", JSON.stringify(selectedHour));
+        await AsyncStorage.setItem("@saveforms:day", JSON.stringify(selectedDay));
+        await AsyncStorage.setItem("@saveforms:month", JSON.stringify(selectedMonth));
+        await AsyncStorage.setItem("@saveforms:year", JSON.stringify(selectedYear));
+    
+        // Feedback de sucesso
+        Alert.alert(
+          "Sucesso",
+          "Seu formulário foi enviado com sucesso!",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                
+                navigation.navigate('TabRoutesClient'); 
+              }
+            }
+          ]
+        );
+      } catch (error) {
+        // Feedback de erro
+        Alert.alert(
+          "Erro",
+          "Houve um problema ao enviar o formulário. Tente novamente.",
+          [
+            { text: "OK" }
+          ]
+        );
+      }
+    }
+    
 
     const months = [ 
       'janeiro',

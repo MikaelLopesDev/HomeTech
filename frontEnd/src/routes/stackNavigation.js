@@ -11,6 +11,7 @@ import ListModaBeleza from "../pages/Client/ListModaBeleza"
 import ListAutomoveis from "../pages/Client/ListAutomoveis"
 import ListEventos from "../pages/Client/ListEventos"
 import ListReformasReparos from "../pages/Client/ListReformasReparos"
+import MeusPedidos from "../pages/Client/MeusPedidos"
 
 
 
@@ -81,6 +82,7 @@ export default function StackNavigation() {
           <Stack.Screen name="ListAutomoveis" component={ListAutomoveis}   options={{ headerShown: false }}/>
           <Stack.Screen name="ListEventos" component={ListEventos}   options={{ headerShown: false }}/>
           <Stack.Screen name="ListReformasReparos" component={ListReformasReparos}   options={{ headerShown: false }}/>
+          <Stack.Screen name="MeusPedidos" component={MeusPedidos}   options={{ headerShown: false }}/>
 
           <Stack.Screen name="CadCategoriaTech" component={CadCategoriaTech}   options={{ headerShown: false }}/>
           <Stack.Screen name="CadListAssitenciaTecnica" component={CadListAssitenciaTecnica}   options={{ headerShown: false }}/>

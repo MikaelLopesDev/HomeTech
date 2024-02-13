@@ -1,120 +1,75 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
-import { Alert } from "react-native";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-} from "react-native";
-
+import { Alert, Image, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login({ navigation }) {
   const [onFocus, setOnFocus] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
 
-  function login() {
-    AsyncStorage.setItem("emailCliente", email);
-    /*
-    socket.emit("login_cliente", {
-      user: { email: email, password: password },
-    });
-    socket.on("login_autorizado", () => {
-      navigation.navigate("Home");
-    });
-
-    socket.on("login_nao_autorizado", () => {
-      Alert.alert("Senha ou login errados");
-    });
-    */
-  }
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisibility);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       {Platform.OS === "android" && <StatusBar backgroundColor="#FFF" />}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ height: "100%" }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboardAvoidingView}>
         <View style={styles.containerLogo}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {  <Image
-              source={require("../../assets/whiteHome.png")}
-              style={styles.logo}
-            />  }
-            
-            <Text style={{ fontWeight: "600",color: "#3B5998",fontSize: 48,fontWeight: "700"}}>
-              Tech
-            </Text>
-          </View>
+          <Image source={require("../../assets/logoHomeTech.png")} style={styles.logo} />
         </View>
 
-        <View style={{ width: "100%", alignItems: "center", marginTop: 100 }}>
-          <View style={{ width: "80%" }}>
-            <Text>E-mail</Text>
+        <View style={styles.formContainer}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>E-mail</Text>
             <View style={styles.inputView}>
               <TextInput
                 placeholder="E-mail"
                 placeholderTextColor="#3b5998"
                 value={email}
-                onChangeText={(text) => setEmail(text)}
-                style={{ fontSize: 14, fontWeight: "400" }}
-                onFocus={() => {
-                  setOnFocus(false);
-                }}
-                onEndEditing={() => {
-                  setOnFocus(true);
-                }}
+                onChangeText={setEmail}
+                style={styles.inputText}
+                onFocus={() => setOnFocus(false)}
+                onEndEditing={() => setOnFocus(true)}
               />
             </View>
           </View>
 
-          <View style={{ width: "80%", marginTop: 30 }}>
-            <Text>Senha</Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Senha</Text>
             <View style={styles.inputView}>
               <TextInput
                 placeholder="********"
                 placeholderTextColor="#3B5998"
-                style={{ fontSize: 14 }}
+                style={styles.inputText}
                 value={password}
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry
-                onFocus={() => {
-                  setOnFocus(false);
-                }}
-                onEndEditing={() => {
-                  setOnFocus(true);
-                }}
+                onChangeText={setPassword}
+                secureTextEntry={passwordVisibility}
+                onFocus={() => setOnFocus(false)}
+                onEndEditing={() => setOnFocus(true)}
               />
+              <TouchableOpacity onPress={togglePasswordVisibility} style={styles.visibilityToggle}>
+                <Image
+                  source={passwordVisibility ? require('../../assets/eye.png') : require('../../assets/eye-off.png')}
+                  style={styles.visibilityIcon}
+                />
+              </TouchableOpacity>
             </View>
           </View>
+
           <TouchableOpacity style={styles.buttonLogin} onPress={() => navigation.navigate("TabRoutesClient")}>
-            <Text style={{ fontSize: 20, color: "white", fontWeight: "700" }}>
-              Confirmar
-            </Text>
+            <Text style={styles.buttonLoginText}>Confirmar</Text>
           </TouchableOpacity>
         </View>
+
         {onFocus && (
           <View style={styles.frameBlue}>
             <TouchableOpacity>
-              <Text style={{ color: "white", marginTop: 40 }}>
-                Não Tem Conta? Comece Aqui.
-              </Text>
+              <Text style={styles.frameBlueText}>Não Tem Conta? Comece Aqui.</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonCriarConta}
-              onPress={() => navigation.navigate("Cadastro")}
-            >
-              <Text style={{ fontSize: 20, color: "white", fontWeight: "400" }}>
-                Criar Conta
-              </Text>
+            <TouchableOpacity style={styles.buttonCriarConta} onPress={() => navigation.navigate("Cadastro")}>
+              <Text style={styles.buttonCriarContaText}>Criar Conta</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -126,54 +81,94 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000"
+    backgroundColor: "#FFF",
+  },
+  keyboardAvoidingView: {
+    height: "100%",
+  },
+  containerLogo: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  logo: {
+    height: 100,
+    width: 200,
+  },
+  formContainer: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 100,
+  },
+  inputContainer: {
+    width: "80%",
+  },
+  label: {
+    color: "white",
+  },
+  inputView: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 44,
+    borderRadius: 15,
+    borderWidth: 1,
+    paddingLeft: 30,
+    paddingRight: 10,
+    marginTop: 5,
+  },
+  inputText: {
+    flex: 1,
+    color: "black",
+    fontSize: 14,
+  },
+  visibilityToggle: {
+    padding: 5,
+  },
+  visibilityIcon: {
+    width: 20,
+    height: 20,
+  },
+  buttonLogin: {
+    backgroundColor: "#3B5998",
+    borderRadius: 15,
+    marginTop: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 146,
+    height: 45,
+  },
+  buttonLoginText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "700",
   },
   frameBlue: {
+    position: "absolute",
     bottom: 0,
     right: 0,
     left: 0,
-    position: "absolute",
     backgroundColor: "#3B5998",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     height: 230,
     alignItems: "center",
   },
-  containerLogo: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  logo: {
-    height: 50,
-    width: 50,
-    
-  },
-  inputView: {
-    height: 44,
-    borderRadius: 15,
-    borderWidth: 1,
-    width: "100%",
-    justifyContent: "center",
-    paddingLeft: 30,
-    paddingTop: 5,
-    color: "white"
+  frameBlueText: {
+    color: "white",
+    marginTop: 40,
   },
   buttonCriarConta: {
-    height: 47,
-    width: 120,
     backgroundColor: "#282F62",
     borderRadius: 15,
     marginTop: 30,
     alignItems: "center",
     justifyContent: "center",
+    width: 120,
+    height: 47,
   },
-  buttonLogin: {
-    backgroundColor: "#3B5998",
-    width: 146,
-    height: 45,
-    borderRadius: 15,
-    marginTop: 60,
-    alignItems: "center",
-    justifyContent: "center",
+  buttonCriarContaText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "400",
   },
+  // Adicione mais estilos conforme necessário
 });

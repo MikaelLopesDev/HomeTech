@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import Checkbox from "../../components/checkbox";
+import { Dimensions } from 'react-native';
+
 import {
   View,
   Text, 
@@ -12,6 +14,8 @@ import {
 ScrollView,
 } from "react-native";
 import { api } from "../../api/api";
+
+const { width, height } = Dimensions.get('window');
 
 
 export default function Cadastro({ navigation }) {
@@ -120,7 +124,7 @@ export default function Cadastro({ navigation }) {
                 </Text>
                 <View style={styles.inputWrapper}>
                   <View>
-                    <Text style={{ marginTop: 40 }}>E-mail</Text>
+                    <Text style={styles.label}>E-mail</Text>
                     <View style={styles.input}>
                       <TextInput
                         style={{ marginLeft: 10 }}
@@ -131,7 +135,7 @@ export default function Cadastro({ navigation }) {
                     </View>
                   </View>
                   <View>
-                    <Text style={{ marginTop: 20 }}>Confirmar E-mail</Text>
+                    <Text style={styles.label}>Confirmar E-mail</Text>
                     <View style={styles.input}>
                       <TextInput
                         style={{ marginLeft: 10 }}
@@ -142,7 +146,7 @@ export default function Cadastro({ navigation }) {
                     </View>
                   </View>
                   <View>
-                    <Text style={{ marginTop: 20 }}>Senha</Text>
+                    <Text style={styles.label}>Senha</Text>
                     <View style={styles.input}>
                       <TextInput
                         style={{ marginLeft: 10 }}
@@ -154,7 +158,7 @@ export default function Cadastro({ navigation }) {
                     </View>
                   </View>
                   <View>
-                    <Text style={{ marginTop: 20 }}>Confirmar Senha</Text>
+                    <Text style={styles.label}>Confirmar Senha</Text>
                     <View style={styles.input}>
                       <TextInput
                         style={{ marginLeft: 10 }}
@@ -204,7 +208,7 @@ export default function Cadastro({ navigation }) {
                     <View style={styles.inputWrapper}>
                       <View style={styles.inputRow}>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 40 }}>Nome</Text>
+                          <Text style={styles.label}>Nome</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -215,7 +219,7 @@ export default function Cadastro({ navigation }) {
                           </View>
                         </View>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 40 }}>Sobrenome</Text>
+                          <Text style={styles.label}>Sobrenome</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -229,7 +233,7 @@ export default function Cadastro({ navigation }) {
                       <View style={styles.inputRow}>
                         {checkedPessoaFisica === true && (
                           <View style={{ width: "45%" }}>
-                            <Text style={{ marginTop: 20 }}>CPF</Text>
+                            <Text style={styles.label}>CPF</Text>
                             <View style={styles.input}>
                               <TextInput
                                 style={{ marginLeft: 10 }}
@@ -242,8 +246,8 @@ export default function Cadastro({ navigation }) {
                         )}
                         {checkedPessoaJuridica === true && (
                           <View style={{ width: "45%" }}>
-                            <Text style={{ marginTop: 20 }}>CNPJ</Text>
-                            <View style={styles.input}>
+                            <Text style={styles.label}>CNPJ</Text>
+                            <View style={styles.input}>""
                               <TextInput
                                 style={{ marginLeft: 10 }}
                                 onChangeText={handleChange("cnpj")}
@@ -254,7 +258,7 @@ export default function Cadastro({ navigation }) {
                           </View>
                         )}
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>E-mail</Text>
+                          <Text style={styles.label}>E-mail</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -268,7 +272,7 @@ export default function Cadastro({ navigation }) {
 
                       <View style={styles.inputRow}>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>
+                          <Text style={styles.label}>
                             Numero de celular
                           </Text>
                           <View style={styles.input}>
@@ -281,7 +285,7 @@ export default function Cadastro({ navigation }) {
                           </View>
                         </View>
                         <View style={{ width: "45%", flexDirection: "row" }}>
-                          <Text style={{ marginTop: 20 }}>Sexo: </Text>
+                          <Text style={styles.label}>Sexo: </Text>
                           <View style={{ marginTop: 20 }}>
                             <View
                               style={{
@@ -289,7 +293,7 @@ export default function Cadastro({ navigation }) {
                                 alignItems: "center",
                               }}
                             >
-                              <Text style={{ marginRight: 10 }}>Masculino</Text>
+                              <Text style={styles.label}>Masculino</Text>
                               <Checkbox
                                 checked={masculino}
                                 setChecked={setMasculino}
@@ -301,7 +305,7 @@ export default function Cadastro({ navigation }) {
                                 alignItems: "center",
                               }}
                             >
-                              <Text style={{ marginRight: 10 }}>Feminino</Text>
+                              <Text style={styles.label}>Feminino</Text>
                               <Checkbox
                                 checked={feminino}
                                 setChecked={setFeminino}
@@ -312,7 +316,7 @@ export default function Cadastro({ navigation }) {
                       </View>
                       <View style={styles.inputRow}>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 50 }}>CEP</Text>
+                          <Text style={styles.label}>CEP</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -325,7 +329,7 @@ export default function Cadastro({ navigation }) {
                       </View>
                       <View style={styles.inputRow}>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Endereço</Text>
+                          <Text style={styles.label}>Endereço</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -336,7 +340,7 @@ export default function Cadastro({ navigation }) {
                           </View>
                         </View>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Complemento</Text>
+                          <Text style={styles.label}>Complemento</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -349,7 +353,7 @@ export default function Cadastro({ navigation }) {
                       </View>
                       <View style={styles.inputRow}>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Cidade</Text>
+                          <Text style={styles.label}>Cidade</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -360,7 +364,7 @@ export default function Cadastro({ navigation }) {
                           </View>
                         </View>
                         <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Estado</Text>
+                          <Text style={styles.label}>Estado</Text>
                           <View style={styles.input}>
                             <TextInput
                               style={{ marginLeft: 10 }}
@@ -373,19 +377,20 @@ export default function Cadastro({ navigation }) {
                       </View>
 
                       <View style={styles.checkboxview}>
-                        <Checkbox
-                          checked={checkedPessoaFisica}
-                          setChecked={setCheckedPessoaFisica}
-                        />
-                        <Text style={{ marginLeft: 10 }}>Pessoa Fisica</Text>
-                      </View>
-                      <View style={styles.checkboxview}>
-                        <Checkbox
-                          checked={checkedPessoaJuridica}
-                          setChecked={setCheckedPessoaJuridica}
-                        />
-                        <Text style={{ marginLeft: 10 }}>Pessoa Juridica</Text>
-                      </View>
+  <Checkbox
+    checked={checkedPessoaFisica}
+    setChecked={setCheckedPessoaFisica}
+  />
+  <Text style={styles.label}>Pessoa Fisica</Text>
+</View>
+<View style={styles.checkboxview}>
+  <Checkbox
+    checked={checkedPessoaJuridica}
+    setChecked={setCheckedPessoaJuridica}
+  />
+  <Text style={styles.label}>Pessoa Juridica</Text>
+</View>
+
                     </View>
                   </ScrollView>
                 </KeyboardAvoidingView>
@@ -423,7 +428,7 @@ export default function Cadastro({ navigation }) {
                   </View>
                   <View style={styles.otpInput}>
                     <TextInput />
-                  </View>
+                </View>
                 </View>
                     
                 {view === 3 && (
@@ -448,40 +453,41 @@ export default function Cadastro({ navigation }) {
             
             {view !== 3 && (
               <View
-                style={{
-                  width: "90%",
-                  alignSelf: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 30,
+              style={{
+                width: "90%",
+                alignSelf: "center",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 30,
+              }}
+            >
+              <TouchableOpacity
+                style={[styles.button, { flex: 1, marginRight: 10 }]} // Usa flex para ajustar a largura e marginRight para espaçamento
+                onPress={() => {
+                  view === 1 ? navigation.goBack() : setView(view - 1);
                 }}
               >
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    view === 1 ? navigation.goBack() : setView(view - 1);
-                  }}
+                <Text
+                  style={{ color: "white", fontSize: 16, fontWeight: "700" }} // Ajusta o tamanho da fonte se necessário
                 >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    Voltar
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    setView(view + 1);
-                  }}
+                  Voltar
+                </Text>
+              </TouchableOpacity>
+            
+              <TouchableOpacity
+                style={[styles.button, { flex: 1, marginLeft: 10 }]} // Usa flex para ajustar a largura e marginLeft para espaçamento
+                onPress={() => {
+                  setView(view + 1);
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontSize: 16, fontWeight: "700" }} // Ajusta o tamanho da fonte se necessário
                 >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    Proximo
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  Próximo
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
             )}
           </>
         )}
@@ -491,88 +497,39 @@ export default function Cadastro({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  checkboxview: {
+    flexDirection: 'row', // Organiza os elementos horizontalmente
+    alignItems: 'center', // Centraliza os itens verticalmente na View
+    marginBottom: 10, // Adiciona um espaço abaixo de cada linha de checkbox
   },
-  otpInput: {
-    height: 50,
-    width: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  otpWrapper: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  inputWrapper: {
-    width: "85%",
-    alignSelf: "center",
+  label: {
+    fontSize: width < 350 ? 14 : 16, // Tamanho da fonte ajustável com base na largura da tela
+    color: '#333', // Cor do texto
+    fontWeight: 'bold', // Peso da fonte
+    marginBottom: 8, // Espaçamento abaixo do rótulo
+    marginTop: 20, // Espaçamento acima do rótulo
   },
   input: {
     borderWidth: 1,
-    width: "100%",
-    height: 24,
-    borderRadius: 15,
-    justifyContent: "center",
+    borderColor: '#ddd', // Cor da borda
+    backgroundColor: '#f9f9f9', // Cor de fundo do campo de entrada
+    height: 48, // Altura aumentada para melhor toque
+    borderRadius: 10, // Bordas menos arredondadas para um visual moderno
+    paddingLeft: 20, // Padding maior para o texto não começar exatamente na borda
+    marginTop: 12, // Espaçamento superior aumentado
   },
-  inputMid: {
-    borderWidth: 1,
-    width: "45%",
-    height: 24,
-    borderRadius: 15,
-    justifyContent: "center",
-  },
-  checkboxview: {
-    flexDirection: "row",
-    marginTop: 30,
-    alignItems: "center",
+  inputIcon: {
+    position: 'absolute',
+    right: 15, // Posição ajustada para a direita
+    top: width < 350 ? 14 : 16, // Ajuste na posição superior com base na largura da tela
   },
   button: {
-    height: 38,
-    width: 105,
-    backgroundColor: "#3B5998",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#3B5998',
+    borderRadius: 20,
+    height: 45, // Mantém a altura dos botões
+    justifyContent: 'center',
+    alignItems: 'center',
+    // Remova a propriedade 'width' para permitir que o 'flex' controle a largura
   },
-  inputRow: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-  },
-
-  borderStyleBase: {
-    width: 30,
-    height: 45,
-  },
-
-  borderStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
-
-  underlineStyleBase: {
-    width: 30,
-    height: 45,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    color: "#000",
-  },
-
-  underlineStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
-  buttonLogin: {
-    backgroundColor: "#3B5998",
-    width: 146,
-    height: 45,
-    borderRadius: 15,
-    marginTop: 60,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  // Outros estilos podem ser ajustados de forma semelhante para melhorar a aparência
 });
-
