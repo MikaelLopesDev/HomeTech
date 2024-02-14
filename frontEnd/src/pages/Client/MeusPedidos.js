@@ -39,7 +39,7 @@ export default function ServiceStatusScreen({ navigation }) {
                 </View>
 
                 <View style={styles.subheader}>
-                    <Text style={styles.subHeadline}>Serviços Disponíveis</Text>
+                    <Text style={styles.subHeadline}>Meus Pedidos</Text>
                 </View>
 
                 {servicos.map((servico, index) => (
