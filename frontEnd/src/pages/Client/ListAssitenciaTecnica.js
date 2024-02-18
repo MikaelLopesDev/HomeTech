@@ -111,10 +111,10 @@ export default function ListAssitenciaTecnica({ navigation }) {
 
 const oneService = ({ item }) => (
   <TouchableOpacity onPress={() => onPressItem(item.id)}>
-    <View style={[styles.item, selectedId === item.id && styles.selectedItem]}>
-      <Text style={styles.name}>{item.name}</Text>
-    </View>
-  </TouchableOpacity>
+  <View style={[styles.item, selectedId === item.id && styles.selectedItem]}>
+    <Text style={[styles.name, selectedId === item.id && styles.selectedText]}>{item.name}</Text>
+  </View>
+</TouchableOpacity>
 );
 
 const headerComponent = () => {
@@ -163,12 +163,13 @@ listHeader: {
   height: 70,
   alignItems: 'center',
   justifyContent: 'center',
-  backgroundColor: '#3B5998',
+  backgroundColor: '#001C30',
 },
 lisHeadline: {
   color: '#FFF',
   fontSize: 21,
   fontWeight: 'bold',
+  marginTop: 15,
 },
 item: {
   flex: 1,
@@ -177,7 +178,10 @@ item: {
   paddingVertical: 10,
 },
 selectedItem: {
-  backgroundColor: '#3B5998', // Cor quando o item é selecionado
+  backgroundColor: '#001C30', // Cor quando o item é selecionado
+},
+selectedText: {
+  color: 'white', // Cor do texto quando o item é selecionado
 },
 name: {
   fontWeight: 'bold',
@@ -200,7 +204,7 @@ button: {
   height: 38,
   width: 105,
   flex: 1,
-  backgroundColor: "#3B5998",
+  backgroundColor: "#001C30",
   borderRadius: 15,
   alignItems: "center",
   justifyContent: "center",

@@ -22,7 +22,7 @@ export default function TelaDeInicio({navigation}) {
 				<View style={{ width: "80%" }}>
 					<Text
 						style={{
-							color: "#3B5998",
+							color: "#001C30",
 							fontWeight: "700",
 							fontSize: 24,
 							alignSelf: "flex-start",
@@ -34,7 +34,7 @@ export default function TelaDeInicio({navigation}) {
 					</Text>
 					<Text
 						style={{
-							color: "#3B5998",
+							color: "#001C30",
 							fontWeight: "700",
 							fontSize: 24,
 							alignSelf: "flex-start",
@@ -48,14 +48,14 @@ export default function TelaDeInicio({navigation}) {
 								style={{
 									height: 44,
 									width: 146,
-									backgroundColor: "#3B5998",
+									backgroundColor: "#001C30",
 									borderRadius: 15,
 									alignItems: "center",
 									justifyContent: "center",
 								}}
 							>
 								<Text
-									style={{ color: "black", fontWeight: "700", fontSize: 20 }}
+									style={{ color: "white", fontWeight: "700", fontSize: 20 }}
 								>
 									Começar
 								</Text>
@@ -68,7 +68,7 @@ export default function TelaDeInicio({navigation}) {
 				<View style={{ width: "80%" }}>
 					<Text
 						style={{
-							color: "black",
+							color: "white",
 							fontWeight: "700",
 							fontSize: 24,
 							alignSelf: "flex-end",
@@ -80,7 +80,7 @@ export default function TelaDeInicio({navigation}) {
 					</Text>
 					<Text
 						style={{
-							color: "black",
+							color: "white",
 							fontWeight: "700",
 							fontSize: 24,
 							alignSelf: "flex-end",
@@ -96,14 +96,14 @@ export default function TelaDeInicio({navigation}) {
 								style={{
 									height: 44,
 									width: 146,
-									backgroundColor: "black",
+									backgroundColor: "white",
 									borderRadius: 16,
 									alignItems: "center",
 									justifyContent: "center",
 								}}
 							>
 								<Text
-									style={{ color: "#3B5998", fontWeight: "700", fontSize: 20 }}
+									style={{ color: "#001C30", fontWeight: "700", fontSize: 20 }}
 								>
 									Começar
 								</Text>
@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
 	containerBalck: {
 		height: "50%",
 		alignItems: "center",
-        backgroundColor: "#000"
+        backgroundColor: "#FFF"
 	},
 	containerBlue: {
 		height: "50%",
-		backgroundColor: "#3B5998",
+		backgroundColor: "#001C30",
 		alignItems: "center",
 	},
 });

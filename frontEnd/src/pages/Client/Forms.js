@@ -470,7 +470,7 @@ setSelectedDay(0);
                   
                   <View style={styles.buttonContainer}>
                   <Button 
-                  color="#3B5998"
+                  color="#001C30"
         title="Enviar"
         onPress={handleNew }
         
@@ -500,13 +500,14 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3B5998',
+    backgroundColor: '#001C30',
   },
   Title:{
 
     color: '#FFF',
     fontSize: 21,
     fontWeight: 'bold',
+    marginTop: 20,
   },
 
   subTitle:{

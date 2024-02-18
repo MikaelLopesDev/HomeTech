@@ -71,7 +71,7 @@ export default function Configuracoes({navigation}) {
    height: 90,
    alignItems: 'center',
    justifyContent: 'center',
-   backgroundColor: '#3B5998',
+   backgroundColor: '#001C30',
    
     },
    lisHeadline:{

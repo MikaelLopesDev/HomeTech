@@ -109,7 +109,9 @@ export default function CadListAssitenciaTecnica({ navigation, route }) {
 const handleFinish = async () => {
   const userData = {
     ...formData,
+    avatar: '',
     typeOfPerson: 'TECHNICIAN',
+
     technicianServices: selectedItems.join(',') // IDs dos serviços selecionados
   };
 
@@ -130,7 +132,8 @@ const handleFinish = async () => {
 const oneService = ({ item }) => (
   <TouchableOpacity onPress={() => onPressItem(item.id)}>
     <View style={[styles.item, selectedItems.includes(item.id) ? styles.itemSelected : null]}>
-      <Text style={styles.name}>{item.name}</Text>
+      {/* Aplica um estilo diferente ao texto se o item estiver selecionado */}
+      <Text style={[styles.name, selectedItems.includes(item.id) ? styles.nameSelected : null]}>{item.name}</Text>
     </View>
   </TouchableOpacity>
 );
@@ -175,7 +178,7 @@ lisHeadline: {
   fontWeight: 'bold',
   padding: 20,
   textAlign: 'center',
-  backgroundColor: '#3B5998',
+  backgroundColor: '#001C30',
 },
 item: {
   flexDirection: 'row',
@@ -183,8 +186,11 @@ item: {
   paddingVertical: 10,
   paddingHorizontal: 15,
 },
+nameSelected: {
+  color: 'white', // Define a cor do texto para branco quando o item está selecionado
+},
 itemSelected: {
-  backgroundColor: '#E0E0E0', // Altere para a cor desejada para indicar seleção
+  backgroundColor: '#001C30', // Altere para a cor desejada para indicar seleção
 },
 name: {
   fontWeight: 'bold',
@@ -199,7 +205,7 @@ confirmationContainer: {
   padding: 20,
 },
 button: {
-  backgroundColor: "#3B5998",
+  backgroundColor: "#001C30",
   borderRadius: 15,
   height: 38,
   alignItems: "center",

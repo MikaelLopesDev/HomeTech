@@ -1,63 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Modal, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Modal, ScrollView, Alert, Image, RefreshControl  } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 export default function HomeScreen(navigation) {
 
+  const [refreshing, setRefreshing] = useState(false);
   const [servicos, setServicos] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [servicoSelecionado, setServicoSelecionado] = useState({});
 
-    useEffect(() => {
-      const carregarServicos = async () => {
-        try {
-          const technicianId = await AsyncStorage.getItem('userId'); // Pega o ID do técnico do AsyncStorage
-          if (!technicianId) {
-            throw new Error('ID do técnico não encontrado');
-          }
-          
-          const technicianResponse = await fetch(`http://18.188.75.46:8080/users/${technicianId}`);
-          const technicianData = await technicianResponse.json();
-          if (!technicianResponse.ok) {
-            throw new Error('Falha ao buscar dados do técnico');
-          }
-          
-          const technicianServices = technicianData.technicianServices.split(',');
-          console.log("Serviços do técnico:", technicianServices); // Log dos serviços do técnico
-    
-          const response = await fetch('http://18.188.75.46:8080/jobs');
-          const jobsData = await response.json();
-          if (!response.ok) {
-            throw new Error('Falha ao buscar serviços');
-          }
-    
-          console.log("Todos os serviços disponíveis:", jobsData); // Log de todos os serviços disponíveis
-    
-          // Filtra apenas os serviços que correspondem aos tipos de serviço do técnico
-          const filteredServices = jobsData.filter(job => technicianServices.includes(String(job.typeId)));
-          console.log("Serviços filtrados para o técnico:", filteredServices); // Log dos serviços após a filtragem
-    
-          setServicos(filteredServices);
-          
-        } catch (error) {
-          console.error('Erro ao buscar serviços ou dados do técnico:', error);
-          Alert.alert("Erro", error.message);
+    const carregarServicos = async () => {
+      try {
+        const technicianId = await AsyncStorage.getItem('userId');
+        if (!technicianId) {
+          throw new Error('ID do técnico não encontrado');
         }
-      };
-    
-      carregarServicos();
+  
+        const technicianResponse = await fetch(`http://18.188.75.46:8080/users/${technicianId}`);
+        const technicianData = await technicianResponse.json();
+        if (!technicianResponse.ok) {
+          throw new Error('Falha ao buscar dados do técnico');
+        }
+  
+        const technicianServices = technicianData.technicianServices.split(',');
+        const response = await fetch('http://18.188.75.46:8080/jobs');
+        const jobsData = await response.json();
+        if (!response.ok) {
+          throw new Error('Falha ao buscar serviços');
+        }
+  
+        const filteredServices = jobsData.filter(job => technicianServices.includes(String(job.type)) && job.status === "PENDING");
+        setServicos(filteredServices);
+      } catch (error) {
+        console.error('Erro ao buscar serviços ou dados do técnico:', error);
+        Alert.alert("Erro", error.message);
+      }
+    };
+  
+    useEffect(() => {
+      carregarServicos(); // Call carregarServicos inside useEffect
     }, []);
-    
-    
+  
+    const onRefresh = React.useCallback(async () => {
+      setRefreshing(true);
+      await carregarServicos(); // Call carregarServicos inside onRefresh
+      setRefreshing(false);
+    }, []);
     
     const toggleModal = (servico) => {
       setServicoSelecionado({
           marca: servico.brand, // Supondo que a propriedade no objeto do serviço seja 'brand'
           garantia: servico.guarantee, // Supondo que a propriedade no objeto do serviço seja 'guarantee'
           problema: servico.problem, // Supondo que a propriedade no objeto do serviço seja 'problem'
-      });
+      })
       setModalVisible(!modalVisible);
   };
     
@@ -91,12 +88,7 @@ const aceitarServico = async (index) => {
     }
 
     // Atualiza a lista de serviços após a confirmação da API
-    const updatedServicesResponse = await fetch('http://18.188.75.46:8080/jobs');
-    if (!updatedServicesResponse.ok) {
-      throw new Error('Falha ao buscar serviços atualizados');
-    }
-    const updatedServices = await updatedServicesResponse.json();
-    setServicos(updatedServices); // Atualiza a lista de serviços com os dados recebidos da API
+    carregarServicos();
 
     Alert.alert("Sucesso", "Serviço aceito com sucesso!");
   } catch (error) {
@@ -107,20 +99,19 @@ const aceitarServico = async (index) => {
 
 
 return (
-  <SafeAreaView style={styles.container}>
-    <ScrollView>
+  <SafeAreaView>
     <View style={styles.header}>
-      <Text style={styles.headline}>HomeTech</Text>
+      <Text style={styles.headline}>Serviços Disponíveis</Text>
     </View>
-
-    <View style={styles.subheader}>
-      <Text style={styles.subHeadline}>Serviços Disponíveis</Text>
-    </View>
+    
+    <ScrollView  refreshControl={
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  }>
     {servicos.map((servico, index) => (
   <TouchableOpacity key={index} onPress={() => toggleModal(servico)} style={styles.infoContainer}>
     <View style={styles.dataContainer}>
-      <Text style={styles.dataText}>Data: {servico.selectedDay}/{servico.selectedMonth}/{servico.selectedYear}</Text>
-      <Text style={styles.horaText}>Hora: {servico.selectedHour}h</Text>
+      <Text style={styles.dataText}>Data: 19/02/2024</Text>
+      <Text style={styles.horaText}>Hora: 16h</Text>
     </View>
 
     <View style={styles.detailsContainer}>
@@ -128,15 +119,14 @@ return (
     </View>
 
     <View style={styles.actionButtonsContainer}>
-    <TouchableOpacity onPress={() => aceitarServico(index)} style={[styles.actionButton, styles.acceptButton]}>
+  <TouchableOpacity onPress={() => aceitarServico(index)} style={[styles.actionButton, styles.acceptButton]}>
+    <Image source={require('../../assets/accept.png')} style={styles.actionButtonIcon} />
+  </TouchableOpacity>
 
-        <Text style={styles.actionButtonText}>Aceitar Serviço</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={recusarServico} style={[styles.actionButton, styles.rejectButton]}>
-        <Text style={styles.actionButtonText}>Recusar Serviço</Text>
-      </TouchableOpacity>
-    </View>
+  <TouchableOpacity onPress={recusarServico} style={[styles.actionButton, styles.rejectButton]}>
+    <Image source={require('../../assets/refuse.png')} style={styles.actionButtonIcon} />
+  </TouchableOpacity>
+</View>
   </TouchableOpacity>
 ))}
 
@@ -166,7 +156,7 @@ return (
         </View>
       </Modal>
       </ScrollView>
-  </SafeAreaView>
+      </SafeAreaView>
 );
 }
 
@@ -175,15 +165,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#3B5998',
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#001C30",
   },
   headline: {
     color: '#FFFFFF',
     fontSize: 20, // Ajuste no tamanho da fonte
     fontWeight: 'bold',
+  },
+  actionButtonIcon: {
+    width: 40, // Ajuste conforme necessário
+    height: 40, // Ajuste conforme necessário
   },
   subheader: {
     alignItems: 'center',
@@ -191,16 +185,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     paddingVertical: 8, // Reduzido para tornar mais compacto
   },
-  subHeadline: {
-    color: '#FFFFFF',
-    fontSize: 14, // Ajuste no tamanho da fonte
-    fontWeight: 'bold',
-  },
+ 
   infoContainer: {
     margin: 8, // Margens reduzidas
     padding: 8, // Padding reduzido
     borderRadius: 10, // Ajuste no raio da borda
-    backgroundColor: '#3B5998',
+    backgroundColor: '#001C30',
   },
   dataContainer: {
     borderBottomWidth: 1,
@@ -209,40 +199,44 @@ const styles = StyleSheet.create({
     marginBottom: 5, // Espaço adicional após a data
   },
   dataText: {
-    color: '#FFFF00', // Mantendo a data destacada em amarelo
+    color: '#FFF', // Mantendo a data destacada em amarelo
     fontWeight: 'bold',
     fontSize: 14, // Ajuste no tamanho da fonte
   },
   horaText: {
-    color: '#FFFF00',
+    color: '#FFF',
     fontSize: 14, // Ajuste no tamanho da fonte
   },
   detailsContainer: {
     marginTop: 5, // Reduzido para tornar mais compacto
   },
   detailsText: {
-    color: '#FFFF00',
+    color: '#FFF',
     fontWeight: 'bold',
     fontSize: 14, // Ajuste no tamanho da fonte
     marginBottom: 4, // Reduzido para tornar as linhas mais próximas
   },
   actionButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-  },
-  actionButton: {
-    paddingVertical: 8, // Padding vertical reduzido
-    paddingHorizontal: 15, // Padding horizontal ajustado
-    borderRadius: 5,
-    minWidth: 90, // Largura mínima ajustada para tornar os botões mais compactos
+    justifyContent: 'flex-end', // Alinha os botões à direita
     alignItems: 'center',
+    marginBottom: 10, // Ajuste conforme necessário para a margem inferior
+    marginRight: 10, // Ajuste conforme necessário para a margem direita
+  },
+  
+  actionButton: {
+    marginLeft: 5, // Adiciona um pequeno espaço entre os botões
+    paddingVertical: 0, // Mantém o padding vertical
+    paddingHorizontal: 10, // Ajuste conforme necessário para o padding horizontal
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center', // Centraliza o ícone dentro do botão
   },
   acceptButton: {
-    backgroundColor: '#4CAF50', // Verde
+    backgroundColor: '#001C30', // Verde
   },
   rejectButton: {
-    backgroundColor: '#F44336', // Vermelho
+    backgroundColor: '#001C30', // Vermelho
   },
   actionButtonText: {
     color: '#FFFFFF',
@@ -268,6 +262,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     fontWeight: 'bold',
+    color: "#001C30",
   },
   modalContent: {
     marginBottom: 10,
@@ -276,10 +271,10 @@ const styles = StyleSheet.create({
   },
   modalContentLabel: {
     fontWeight: 'bold', // Torna o texto em negrito
-    color: '#3B5998', // Exemplo de cor para destaque, ajuste conforme necessário
+    color: "#001C30", // Exemplo de cor para destaque, ajuste conforme necessário
   },
   closeModalButton: {
-    backgroundColor: "#3B5998",
+    backgroundColor: "#001C30",
     borderRadius: 20,
     padding: 10,
     elevation: 2,

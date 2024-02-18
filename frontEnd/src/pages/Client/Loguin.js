@@ -1,17 +1,19 @@
-import React, { useState } from "react";
-import { Alert, Image, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Alert, Image, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView,Keyboard } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login({ navigation }) {
-  const [onFocus, setOnFocus] = useState(true);
+  const [isFocused, setOnFocus] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
     setPasswordVisibility(!passwordVisibility);
   };
 
+  
   const handleLogin = async () => {
 
     console.log("Tentativa de login com:", { email: email, password: password });
@@ -50,14 +52,38 @@ export default function Login({ navigation }) {
     Alert.alert("Erro", "Não foi possível fazer o login. Verifique suas credenciais e tente novamente.");
   }} 
   };
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // ou use setOnFocus(false)
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // ou use setOnFocus(true)
+      }
+    );
+  
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+  
   return (
     <SafeAreaView style={styles.container}>
-      {Platform.OS === "android" && <StatusBar backgroundColor="#FFF" />}
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.keyboardAvoidingView}>
-        <View style={styles.containerLogo}>
-          <Image source={require("../../assets/logoHomeTech.png")} style={styles.logo} />
-        </View>
+    {Platform.OS === "android" && <StatusBar backgroundColor="#FFF" />}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboardAvoidingView}
+    >
+      <View style={styles.containerLogo}>
+        <Image source={require("../../assets/logoHomeTech.png")} style={styles.logo} />
+      </View>
 
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>E-mail</Text>
@@ -97,23 +123,24 @@ export default function Login({ navigation }) {
           </View>
 
           <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
-  <Text style={styles.buttonLoginText}>Confirmar</Text>
+  <Text style={styles.buttonLoginText}>Entrar</Text>
 </TouchableOpacity>
         </View>
-
-        {onFocus && (
-          <View style={styles.frameBlue}>
-            <TouchableOpacity>
-              <Text style={styles.frameBlueText}>Não Tem Conta? Comece Aqui.</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonCriarConta} onPress={() => navigation.navigate("Cadastro")}>
-              <Text style={styles.buttonCriarContaText}>Criar Conta</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+        </ScrollView>
+        
+        {!isKeyboardVisible && (
+        <View style={styles.frameBlue}>
+          <TouchableOpacity>
+            <Text style={styles.frameBlueText}>Não tem conta ainda?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonCriarConta} onPress={() => navigation.navigate("Cadastro")}>
+            <Text style={styles.buttonCriarContaText}>CADASTRE-SE</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </KeyboardAvoidingView>
+  </SafeAreaView>
+);
 }
 
 const styles = StyleSheet.create({
@@ -131,6 +158,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 100,
     width: 200,
+    marginTop: 40,
   },
   formContainer: {
     width: "100%",
@@ -166,7 +194,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   buttonLogin: {
-    backgroundColor: "#3B5998",
+    backgroundColor: "#001C30",
     borderRadius: 15,
     marginTop: 60,
     alignItems: "center",
@@ -184,10 +212,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     left: 0,
-    backgroundColor: "#3B5998",
+    backgroundColor: "#001C30",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    height: 230,
+    height: 180,
     alignItems: "center",
   },
   frameBlueText: {
@@ -195,18 +223,18 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   buttonCriarConta: {
-    backgroundColor: "#282F62",
+    backgroundColor: "#FFF",
     borderRadius: 15,
     marginTop: 30,
     alignItems: "center",
     justifyContent: "center",
-    width: 120,
-    height: 47,
+    width: 140,
+    height: 50,
   },
   buttonCriarContaText: {
-    color: "white",
-    fontSize: 20,
+    color: "#001C30",
+    fontSize: 18,
     fontWeight: "400",
   },
-  // Adicione mais estilos conforme necessário
+ 
 });

@@ -33,7 +33,7 @@ export default function TabRoutesClient() {
             left: 0,
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
-            backgroundColor: "#3B5998",
+            backgroundColor: "#001C30",
           },
         }}
       >
@@ -46,7 +46,7 @@ export default function TabRoutesClient() {
                 <SimpleLineIcons
                   name="home"
                   size={28}
-                  color={focused ? "white" : "black"}
+                  color={focused ? "#60FFFF" : "white"}
                 />
               );
             },
@@ -61,7 +61,7 @@ export default function TabRoutesClient() {
                 <Feather
                 name="plus-circle"
                 size={28}
-                color={focused ? "white" : "black"}
+                color={focused ? "#60FFFF" : "white"}
               />
               );
             },
@@ -76,7 +76,7 @@ export default function TabRoutesClient() {
                 <FontAwesome
                   name="list"
                   size={26}
-                  color={focused ? "white" : "black"}
+                  color={focused ? "#60FFFF" : "white"}
                 />
               );
             },
@@ -91,7 +91,7 @@ export default function TabRoutesClient() {
                 <Feather
                   name="settings"
                   size={28}
-                  color={focused ? "white" : "black"}
+                  color={focused ? "#60FFFF" : "white"}
                 />
               );
             },

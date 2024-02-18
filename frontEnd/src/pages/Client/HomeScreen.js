@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   TextInput,
   SearchBar,
+  Alert,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -50,17 +51,17 @@ export default function Home({ navigation }) {
      navigation.navigate('ListAssitenciaTecnica')
     }
     else if (id == 2){
-      navigation.navigate('ListAutomoveis')
+      Alert.alert("Indisponível")
     }
     else if (id == 3){
-      navigation.navigate('ListEventos')
+      Alert.alert("Indisponível")
       
     }
     else if (id ==4){
-      navigation.navigate('ListModaBeleza')
+      Alert.alert("Indisponível")
     }
     else if(id==5){
-      navigation.navigate('ListReformasReparos')
+      Alert.alert("Indisponível")
     }
  
  return id
@@ -111,7 +112,7 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView>
       <View style={styles.header}>
-        <Text style={styles.lisHeadline}>HomeTech Services</Text>
+      <Image source={require("../../assets/logoHomeTechBlue.png")} style={styles.logo} />
       </View>
 
       <View style={styles.searchArea}>
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#3B5998",
+    backgroundColor: "#001C30",
   },
   lisHeadline: {
     color: "#FFF",
@@ -152,6 +153,15 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
    
+  },
+  containerLogo: {
+    alignItems: "center",
+    marginTop: 25,
+  },
+  logo: {
+    height: 100,
+    width: 150,
+    marginTop: 0,
   },
   searchArea: {
     flex: 1,
