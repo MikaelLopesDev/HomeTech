@@ -114,7 +114,7 @@ const handleFinish = async () => {
 
     technicianServices: selectedItems.join(',') // IDs dos serviços selecionados
   };
-
+  console.log("Dados do usuário para cadastro:", userData);
   try {
     const response = await axios.post('http://18.188.75.46:8080/users', userData);
     if (response.status === 200 || response.status === 201) {
@@ -128,6 +128,8 @@ const handleFinish = async () => {
     Alert.alert("Erro", "Ocorreu um erro ao realizar o cadastro.");
   }
 };
+
+
 
 const oneService = ({ item }) => (
   <TouchableOpacity onPress={() => onPressItem(item.id)}>

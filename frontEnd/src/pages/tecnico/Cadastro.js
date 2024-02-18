@@ -34,15 +34,19 @@ export default function Cadastro({ navigation }) {
     setCurrentStep(currentStep + 1);
   };
 
-  const handleCadastro = () => {
-    navigation.navigate("CadCategoriaTech", { formData });
-  };
+  const handleCadastro = (values) => {
+    // Atualiza o estado formData com os valores mais recentes do formulário
+    setFormData(values);
+    
+    // Navega para a próxima página, passando os valores atualizados
+    navigation.navigate("CadCategoriaTech", { formData: values });
+  }
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-        <Formik
+      <Formik
   initialValues={formData}
-  onSubmit={currentStep === 1 ? handleNext : handleCadastro}
+  onSubmit={(values) => currentStep === 1 ? handleNext() : handleCadastro(values)}
 >
   {({ handleChange, handleSubmit, values }) => (
     <>
