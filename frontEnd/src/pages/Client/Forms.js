@@ -16,6 +16,7 @@ import {
 export default function Forms({ navigation }) {
   
   const[service,setService] = useState("");
+  const[serviceID,setServiceID] = useState("");
 
     const [marca, setMarca] = useState("");
     const [garantia, setGarantia] = useState("");
@@ -35,6 +36,11 @@ export default function Forms({ navigation }) {
   
       setService(service) 
 
+
+      const serviceID = await AsyncStorage.getItem("@saveserviceID:chooosed");
+  
+      setServiceID(serviceID) 
+
     }
 
     useEffect(() => {
@@ -49,31 +55,40 @@ export default function Forms({ navigation }) {
     
     async function handleNew() {
       try {
-        const newService = {
-          service,
-          marca,
-          garantia,
-          problema,
-          informacoeasAdicionais,
-          selectedHour,
-          selectedDay,
-          selectedMonth,
-          selectedYear,
-          status: 'Aguardando Técnico' // Status inicial
+        // Recupera o customerId do AsyncStorage
+        const customerId = await AsyncStorage.getItem('userId');
+        
+        // Monta o objeto de dados para o POST
+        const jobData = {
+          customerId: customerId,
+          priceOfService: 100.00,
+          typeId: serviceID,
+          service: service,
+          brand: marca,
+          guarantee: garantia,
+          problem: problema
         };
     
-        const existingServices = await AsyncStorage.getItem('@saveforms:services');
-        const services = existingServices ? JSON.parse(existingServices) : [];
-        services.push(newService);
+        // Faz a requisição POST para a API
+        const response = await fetch('http://18.188.75.46:8080/jobs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jobData)
+        });
     
-        await AsyncStorage.setItem('@saveforms:services', JSON.stringify(services));
+        const responseData = await response.json();
     
-        // Feedback de sucesso
-        Alert.alert("Sucesso", "Seu formulário foi enviado com sucesso!", [
-          { text: "OK", onPress: () => navigation.navigate('TabRoutesClient') }
-        ]);
+        if (response.ok) {
+          Alert.alert("Sucesso", "Seu formulário foi enviado com sucesso!", [
+            { text: "OK", onPress: () => navigation.navigate('TabRoutesClient') }
+          ]);
+        } else {
+          throw new Error(responseData.message || 'Erro ao enviar o formulário');
+        }
       } catch (error) {
-        // Feedback de erro
+        console.error(error);
         Alert.alert("Erro", "Houve um problema ao enviar o formulário. Tente novamente.", [{ text: "OK" }]);
       }
     }

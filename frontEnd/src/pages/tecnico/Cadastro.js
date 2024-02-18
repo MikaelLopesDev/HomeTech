@@ -1,536 +1,220 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert, Image } from "react-native";
 import { Formik } from "formik";
-import Checkbox from "../../components/checkbox";
-import {
-  View,
-  Text,
-  TextInput,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ScrollView,
-} from "react-native";
+import axios from "axios";
 
+export default function Cadastro({ navigation }) {
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
 
-export default function CadastroTech({ navigation }) {
-  const [view, setView] = useState(1);
-  const [checked, setChecked] = useState(false);
-  const [pessoa, setPessoa] = useState("");
-  const [checkedPessoaFisica, setCheckedPessoaFisica] = useState(false);
-  const [checkedPessoaJuridica, setCheckedPessoaJuridica] = useState(false);
-  const [masculino, setMasculino] = useState(false);
-  const [feminino, setFeminino] = useState(false);
-
-  function CheckedPessoa() {
-    if (checkedPessoaFisica === true) {
-      setCheckedPessoaJuridica(false);
-      setPessoa("Fisica");
-    }
-    if (checkedPessoaJuridica === true) {
-      setCheckedPessoaFisica(false);
-      setPessoa("Juridica");
-    }
-  }
-
-  const cadastro = async (values) => {
-   /* socket.emit("cadastrar_freelancer", {
-      user: values,
-      nome: `${values.nome}_${values.sobrenome}`,
-    });
-*/
-    navigation.navigate('LoguinTech')
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisibility);
   };
 
-  function CheckedSexo() {
-    if (masculino === true) {
-      setFeminino(false);
-      return "masculino";
-    }
-    if (feminino === true) {
-      setMasculino(false);
-      return "feminino";
-    }
-  }
 
-  useEffect(() => {
-    CheckedPessoa();
-  }, [checkedPessoaJuridica, checkedPessoaFisica]);
+  const cadastro = async (values) => {
+    navigation.navigate("CadCategoriaTech", { formData: values });
+  };
 
-  useEffect(() => {
-    CheckedSexo();
-  }, [masculino, feminino]);
+  const cadastros = async (values) => {
+    const userData = {
+      ...values,
+      typeOfPerson: 'TECHNICIAN',
+      technicianServices: '' 
+    };
+  
+    console.log("Dados enviados para cadastro:", userData); // Imprime os dados que serão enviados
+  
+    try {
+      const response = await axios.post('http://18.188.75.46:8080/users', userData);
+      if (response.status === 200 || response.status === 201) {
+        Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+        navigation.navigate("LoguinTech");
+      } else {
+        Alert.alert("Erro", "Não foi possível realizar o cadastro.");
+      }
+    } catch (error) {
+      console.error("Erro ao realizar cadastro:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao realizar o cadastro.");
+    }
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Formik
-        initialValues={{
-          email: "",
-          confirmarEmail: "",
-          senha: "",
-          confirmarSenha: "",
-          nome: "",
-          sobrenome: "",
-          cpf: "",
-          cnpj: "",
-          numerodetelefone: "",
-          services: [],
-          cep: "",
-          endereco: "",
-          complemento: "",
-          cidade: "",
-          estado: "",
-        }}
-        onSubmit={(values) => cadastro(values)}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <>
-            {view === 1 && (
-              <SafeAreaView style={styles.container}>
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: "400",
-                    alignSelf: "center",
-                    marginTop: 81,
-                  }}
-                >
-                  Cadastro
-                </Text>
-                <View style={styles.inputWrapper}>
-                  <View>
-                    <Text style={{ marginTop: 40 }}>E-mail</Text>
-                    <View style={styles.input}>
-                      <TextInput
-                        style={{ marginLeft: 10 }}
-                        onChangeText={handleChange("email")}
-                        onBlur={handleBlur("email")}
-                        value={values.email}
-                      />
-                    </View>
-                  </View>
-                  <View>
-                    <Text style={{ marginTop: 20 }}>Confirmar E-mail</Text>
-                    <View style={styles.input}>
-                      <TextInput
-                        style={{ marginLeft: 10 }}
-                        onChangeText={handleChange("confirmarEmail")}
-                        onBlur={handleBlur("confirmarEmail")}
-                        value={values.confirmarEmail}
-                      />
-                    </View>
-                  </View>
-                  <View>
-                    <Text style={{ marginTop: 20 }}>Senha</Text>
-                    <View style={styles.input}>
-                      <TextInput
-                        style={{ marginLeft: 10 }}
-                        secureTextEntry
-                        onChangeText={handleChange("senha")}
-                        onBlur={handleBlur("senha")}
-                        value={values.senha}
-                      />
-                    </View>
-                  </View>
-                  <View>
-                    <Text style={{ marginTop: 20 }}>Confirmar Senha</Text>
-                    <View style={styles.input}>
-                      <TextInput
-                        style={{ marginLeft: 10 }}
-                        secureTextEntry
-                        onChangeText={handleChange("confirmarSenha")}
-                        onBlur={handleBlur("confirmarSenha")}
-                        value={values.confirmarSenha}
-                      />
-                    </View>
-                  </View>
-                  <View style={styles.checkboxview}>
-                    <Checkbox checked={checked} setChecked={setChecked} />
-                    <Text style={{ marginLeft: 10 }}>
-                      Li e Concordo com os{" "}
-                      <Text style={{ color: "#282F62" }}>Termos de Uso</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.checkboxview}>
-                    <Checkbox checked={checked} setChecked={setChecked} />
-                    <Text style={{ marginLeft: 10 }}>
-                      Li e Concordo com os{" "}
-                      <Text style={{ color: "#282F62" }}>
-                        Termos de Privacidade
-                      </Text>
-                    </Text>
-                  </View>
-                </View>
-              </SafeAreaView>
-            )}
-            {view === 2 && (
-              <SafeAreaView style={{ flex: 1 }}>
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  style={{ height: "100%" }}
-                >
-                  <ScrollView>
-                    <Text
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "400",
-                        alignSelf: "center",
-                        marginTop: 81,
-                      }}
-                    >
-                      Dados Pessoais
-                    </Text>
-                    <View style={styles.inputWrapper}>
-                      <View style={styles.inputRow}>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 40 }}>Nome</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("nome")}
-                              onBlur={handleBlur("nome")}
-                              value={values.nome}
-                            />
-                          </View>
-                        </View>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 40 }}>Sobrenome</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("sobrenome")}
-                              onBlur={handleBlur("sobrenome")}
-                              value={values.sobrenome}
-                            />
-                          </View>
-                        </View>
-                      </View>
-                      <View style={styles.inputRow}>
-                        {checkedPessoaFisica === true && (
-                          <View style={{ width: "45%" }}>
-                            <Text style={{ marginTop: 20 }}>CPF</Text>
-                            <View style={styles.input}>
-                              <TextInput
-                                style={{ marginLeft: 10 }}
-                                onChangeText={handleChange("cpf")}
-                                onBlur={handleBlur("cpf")}
-                                value={values.cpf}
-                              />
-                            </View>
-                          </View>
-                        )}
-                        {checkedPessoaJuridica === true && (
-                          <View style={{ width: "45%" }}>
-                            <Text style={{ marginTop: 20 }}>CNPJ</Text>
-                            <View style={styles.input}>
-                              <TextInput
-                                style={{ marginLeft: 10 }}
-                                onChangeText={handleChange("cnpj")}
-                                onBlur={handleBlur("cnpj")}
-                                value={values.cnpj}
-                              />
-                            </View>
-                          </View>
-                        )}
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>E-mail</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("email")}
-                              onBlur={handleBlur("email")}
-                              value={values.email}
-                            />
-                          </View>
-                        </View>
-                      </View>
-
-                      <View style={styles.inputRow}>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>
-                            Numero de celular
-                          </Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("numerodetelefone")}
-                              onBlur={handleBlur("numerodetelefone")}
-                              value={values.numerodetelefone}
-                            />
-                          </View>
-                        </View>
-                        <View style={{ width: "45%", flexDirection: "row" }}>
-                          <Text style={{ marginTop: 20 }}>Sexo: </Text>
-                          <View style={{ marginTop: 20 }}>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Text style={{ marginRight: 10 }}>Masculino</Text>
-                              <Checkbox
-                                checked={masculino}
-                                setChecked={setMasculino}
-                              />
-                            </View>
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Text style={{ marginRight: 10 }}>Feminino</Text>
-                              <Checkbox
-                                checked={feminino}
-                                setChecked={setFeminino}
-                              />
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <View style={styles.inputRow}>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 50 }}>CEP</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("cep")}
-                              onBlur={handleBlur("cep")}
-                              value={values.cep}
-                            />
-                          </View>
-                        </View>
-                      </View>
-                      <View style={styles.inputRow}>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Endereço</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("endereco")}
-                              onBlur={handleBlur("endereco")}
-                              value={values.endereco}
-                            />
-                          </View>
-                        </View>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Complemento</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("complemento")}
-                              onBlur={handleBlur("complemento")}
-                              value={values.complemento}
-                            />
-                          </View>
-                        </View>
-                      </View>
-                      <View style={styles.inputRow}>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Cidade</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("cidade")}
-                              onBlur={handleBlur("cidade")}
-                              value={values.cidade}
-                            />
-                          </View>
-                        </View>
-                        <View style={{ width: "45%" }}>
-                          <Text style={{ marginTop: 20 }}>Estado</Text>
-                          <View style={styles.input}>
-                            <TextInput
-                              style={{ marginLeft: 10 }}
-                              onChangeText={handleChange("estado")}
-                              onBlur={handleBlur("estado")}
-                              value={values.estado}
-                            />
-                          </View>
-                        </View>
-                      </View>
-
-                      <View style={styles.checkboxview}>
-                        <Checkbox
-                          checked={checkedPessoaFisica}
-                          setChecked={setCheckedPessoaFisica}
-                        />
-                        <Text style={{ marginLeft: 10 }}>Pessoa Fisica</Text>
-                      </View>
-                      <View style={styles.checkboxview}>
-                        <Checkbox
-                          checked={checkedPessoaJuridica}
-                          setChecked={setCheckedPessoaJuridica}
-                        />
-                        <Text style={{ marginLeft: 10 }}>Pessoa Juridica</Text>
-                      </View>
-                    </View>
-                  </ScrollView>
-                </KeyboardAvoidingView>
-              </SafeAreaView>
-            )}
-            {view === 2 && (
-               <View
-               style={{
-                 width: "90%",
-                 alignSelf: "center",
-                 flexDirection: "row",
-                 justifyContent: "space-between",
-                 marginBottom: 30,
-               }}
-             >
-               <TouchableOpacity
-                 style={styles.button}
-                 onPress={() => {
-                   view === 1 ? navigation.goBack() : setView(view - 1);
-                 }}
-               >
-                 <Text
-                   style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                 >
-                   Voltar
-                 </Text>
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style={styles.button}
-                 onPress={() => {
-                   navigation.navigate('CadCategoriaTech')
-                 }}
-               >
-                 <Text
-                   style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                 >
-                   Proximo
-                 </Text>
-               </TouchableOpacity>
-             </View>
-            )}
-            {view == 1  &&(
-              <View
-                style={{
-                  width: "90%",
-                  alignSelf: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 30,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    view === 1 ? navigation.goBack() : setView(view - 1);
-                  }}
-                >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    Voltar
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    setView(view + 1);
-                  }}
-                >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    Proximo
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </>
-        )}
-      </Formik>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <Text style={styles.title}>Cadastro</Text>
+        <Formik
+          initialValues={{
+            firstName: "",
+            lastName: "",
+            avatar: "",
+            postalCode: "",
+            address: "",
+            email: "",
+            password: ""
+          }}
+          onSubmit={cadastro}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values }) => (
+           <View style={styles.formContainer}>
+           <View style={styles.formBackground}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("firstName")}
+                  onBlur={handleBlur("firstName")}
+                  value={values.firstName}
+                  placeholder="Nome"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("lastName")}
+                  onBlur={handleBlur("lastName")}
+                  value={values.lastName}
+                  placeholder="Sobrenome"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("avatar")}
+                  onBlur={handleBlur("avatar")}
+                  value={values.avatar}
+                  placeholder="Avatar (URL)"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("postalCode")}
+                  onBlur={handleBlur("postalCode")}
+                  value={values.postalCode}
+                  placeholder="CEP"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("address")}
+                  onBlur={handleBlur("address")}
+                  value={values.address}
+                  placeholder="Endereço"
+                />
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                  placeholder="E-mail"
+                />
+         <View style={styles.passwordContainer}>
+      <TextInput
+        style={styles.input}
+        secureTextEntry={passwordVisibility}
+        onChangeText={handleChange("password")}
+        onBlur={handleBlur("password")}
+        value={values.password}
+        placeholder="Senha"
+      />
+      <TouchableOpacity onPress={togglePasswordVisibility} style={styles.visibilityToggle}>
+        <Image
+          source={passwordVisibility ? require("../../assets/eye.png") : require("../../assets/eye-off.png")}
+          style={styles.visibilityIcon}
+        />
+      </TouchableOpacity>
     </View>
-  );
-}
+
+    <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+      <Text style={styles.buttonText}>Cadastrar</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+        )}
+        </Formik>
+      </ScrollView>
+    </KeyboardAvoidingView>
+   
+   );
+  }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  otpInput: {
-    height: 50,
-    width: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
+  formContainer: {
+    alignItems: 'center',
+    padding: 20,
   },
-  otpWrapper: {
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-between",
+  formBackground: {
+    width: '100%',
+    backgroundColor: '#f2f2f2', // Altere conforme necessário
+    padding: 20,
+    borderRadius: 10,
   },
-  inputWrapper: {
-    width: "85%",
-    alignSelf: "center",
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 10,
+    paddingHorizontal: 10, // Ajuste conforme necessário para o padding interno
+    borderRadius: 5, // Ajuste conforme necessário para os cantos arredondados
   },
   input: {
-    borderWidth: 1,
-    width: "100%",
-    height: 24,
-    borderRadius: 15,
-    justifyContent: "center",
+    flex: 1,
+    height: 40,
   },
-  inputMid: {
-    borderWidth: 1,
-    width: "45%",
-    height: 24,
-    borderRadius: 15,
-    justifyContent: "center",
+  visibilityToggle: {
+    marginLeft: 10, // Ajuste conforme necessário
   },
-  checkboxview: {
-    flexDirection: "row",
-    marginTop: 30,
-    alignItems: "center",
+  visibilityIcon: {
+    width: 20,
+    height: 20,
+  },
+  toggleButton: {
+    position: 'absolute',
+    right: 35,
+    top: 35,
+  },
+  passwordContainer: {
+    flexDirection: 'row', // Posiciona os elementos internos em uma linha
+    alignItems: 'center', // Centraliza os elementos verticalmente
+    width: '80%', // Largura do contêiner
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 10,
+  },
+  toggleImage: {
+    width: 20,
+    height: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  form: {
+    alignItems: 'center',
+  },
+  formContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    marginBottom: 10,
   },
   button: {
-    height: 38,
-    width: 105,
-    backgroundColor: "#3B5998",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
   },
-  inputRow: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-  },
-
-  borderStyleBase: {
-    width: 30,
-    height: 45,
-  },
-
-  borderStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
-
-  underlineStyleBase: {
-    width: 30,
-    height: 45,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-    color: "#000",
-  },
-
-  underlineStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
-  buttonLogin: {
-    backgroundColor: "#3B5998",
-    width: 146,
-    height: 45,
-    borderRadius: 15,
-    marginTop: 60,
-    alignItems: "center",
-    justifyContent: "center",
+  buttonText: {
+    color: '#ffffff',
   },
 });

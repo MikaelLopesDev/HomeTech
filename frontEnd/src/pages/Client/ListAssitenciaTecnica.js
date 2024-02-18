@@ -7,6 +7,9 @@ export default function ListAssitenciaTecnica({ navigation }) {
 
   async function handleNew(selectedService) {
     await AsyncStorage.setItem("@saveservice:chooosed", selectedService);
+  }  
+  async function handleNewID(selectedServiceID) {
+    await AsyncStorage.setItem("@saveserviceID:chooosed", selectedServiceID);
   }
   
  const assistenciaTecnicaList = [
@@ -138,8 +141,11 @@ return (
         style={styles.button}
         onPress={() => {
           const selectedService = assistenciaTecnicaList.find(item => item.id === selectedId)?.name;
+          const selectedServiceID = assistenciaTecnicaList.find(item => item.id === selectedId)?.id;
           if (selectedService) {
             handleNew(selectedService);
+            handleNewID(selectedServiceID);
+            console.log(selectedServiceID);
             console.log(selectedService);
             navigation.navigate('Forms');
           }

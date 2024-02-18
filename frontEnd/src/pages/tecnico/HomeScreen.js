@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Modal,ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Modal, ScrollView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -11,19 +11,56 @@ export default function HomeScreen(navigation) {
     const [servicoSelecionado, setServicoSelecionado] = useState({});
 
     useEffect(() => {
-        const carregarServicos = async () => {
-            const servicesData = await AsyncStorage.getItem('@saveforms:services');
-            const services = servicesData ? JSON.parse(servicesData) : [];
-            setServicos(services);
-        };
-
-        carregarServicos();
+      const carregarServicos = async () => {
+        try {
+          const technicianId = await AsyncStorage.getItem('userId'); // Pega o ID do técnico do AsyncStorage
+          if (!technicianId) {
+            throw new Error('ID do técnico não encontrado');
+          }
+          
+          const technicianResponse = await fetch(`http://18.188.75.46:8080/users/${technicianId}`);
+          const technicianData = await technicianResponse.json();
+          if (!technicianResponse.ok) {
+            throw new Error('Falha ao buscar dados do técnico');
+          }
+          
+          const technicianServices = technicianData.technicianServices.split(',');
+          console.log("Serviços do técnico:", technicianServices); // Log dos serviços do técnico
+    
+          const response = await fetch('http://18.188.75.46:8080/jobs');
+          const jobsData = await response.json();
+          if (!response.ok) {
+            throw new Error('Falha ao buscar serviços');
+          }
+    
+          console.log("Todos os serviços disponíveis:", jobsData); // Log de todos os serviços disponíveis
+    
+          // Filtra apenas os serviços que correspondem aos tipos de serviço do técnico
+          const filteredServices = jobsData.filter(job => technicianServices.includes(String(job.typeId)));
+          console.log("Serviços filtrados para o técnico:", filteredServices); // Log dos serviços após a filtragem
+    
+          setServicos(filteredServices);
+          
+        } catch (error) {
+          console.error('Erro ao buscar serviços ou dados do técnico:', error);
+          Alert.alert("Erro", error.message);
+        }
+      };
+    
+      carregarServicos();
     }, []);
-
+    
+    
+    
     const toggleModal = (servico) => {
-        setServicoSelecionado(servico);
-        setModalVisible(!modalVisible);
-    };
+      setServicoSelecionado({
+          marca: servico.brand, // Supondo que a propriedade no objeto do serviço seja 'brand'
+          garantia: servico.guarantee, // Supondo que a propriedade no objeto do serviço seja 'guarantee'
+          problema: servico.problem, // Supondo que a propriedade no objeto do serviço seja 'problem'
+      });
+      setModalVisible(!modalVisible);
+  };
+    
 
 let  onPressItem = () =>{
 
@@ -36,21 +73,38 @@ console.log("serviço recusado");
 
 };
 const aceitarServico = async (index) => {
-  // Verifica se o serviço no índice fornecido está definido
-  if (servicos[index]) {
-    const servicosAtualizados = [...servicos];
-    servicosAtualizados[index] = {
-      ...servicosAtualizados[index],
-      status: 'Aceito', // Atualiza o status do serviço
-    };
-    setServicos(servicosAtualizados);
+  try {
+    const jobId = servicos[index].id; // Acessa o jobId do serviço selecionado
+    const technicianId = await AsyncStorage.getItem('userId'); // Pega o ID do técnico do AsyncStorage
 
-    // Atualiza o AsyncStorage com a nova lista de serviços
-    await AsyncStorage.setItem('@saveforms:services', JSON.stringify(servicosAtualizados));
-  } else {
-    console.error('Serviço não definido no índice:', index);
+    if (!technicianId) {
+      throw new Error('ID do técnico não encontrado');
+    }
+
+    // Requisição PATCH para aceitar o serviço com jobId e technicianId
+    const response = await fetch(`http://18.188.75.46:8080/jobs/accept/${jobId}/${technicianId}`, {
+      method: 'PATCH',
+    });
+
+    if (!response.ok) {
+      throw new Error('Falha ao aceitar serviço');
+    }
+
+    // Atualiza a lista de serviços após a confirmação da API
+    const updatedServicesResponse = await fetch('http://18.188.75.46:8080/jobs');
+    if (!updatedServicesResponse.ok) {
+      throw new Error('Falha ao buscar serviços atualizados');
+    }
+    const updatedServices = await updatedServicesResponse.json();
+    setServicos(updatedServices); // Atualiza a lista de serviços com os dados recebidos da API
+
+    Alert.alert("Sucesso", "Serviço aceito com sucesso!");
+  } catch (error) {
+    console.error('Erro ao aceitar serviço:', error);
+    Alert.alert("Erro", "Não foi possível aceitar o serviço.");
   }
 };
+
 
 return (
   <SafeAreaView style={styles.container}>

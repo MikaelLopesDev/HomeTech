@@ -17,15 +17,25 @@ export default function ServiceStatusScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [servicoSelecionado, setServicoSelecionado] = useState({});
 
+ 
     useEffect(() => {
-        async function carregarServicos() {
-            const servicesData = await AsyncStorage.getItem('@saveforms:services');
-            const services = servicesData ? JSON.parse(servicesData) : [];
-            setServicos(services);
+      const carregarServicos = async () => {
+        try {
+          const response = await fetch('http://18.188.75.46:8080/jobs');
+          const data = await response.json();
+          if (response.ok) {
+            setServicos(data); // Atualiza a lista de serviços com os dados recebidos da API
+          } else {
+            throw new Error('Falha ao buscar serviços');
+          }
+        } catch (error) {
+          console.error('Erro ao buscar serviços:', error);
+          Alert.alert("Erro", "Não foi possível buscar os serviços.");
         }
-        carregarServicos();
+      };
+    
+      carregarServicos();
     }, []);
-
     const toggleModal = (servico) => {
         setServicoSelecionado(servico);
         setModalVisible(!modalVisible);

@@ -1,11 +1,10 @@
-import React, { useState }from 'react';
-import { StyleSheet, Text, View, Image,FlatList,TouchableOpacity, SafeAreaView } from 'react-native';
-import Checkbox from "../../components/checkbox";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, FlatList, Alert } from 'react-native';
+import axios from 'axios';
 
-
-export default function CadListAssitenciaTecnica({navigation}) {
-
-
+export default function CadListAssitenciaTecnica({ navigation, route }) {
+  const { formData } = route.params; // Dados do formulário de cadastro
+  const [selectedItems, setSelectedItems] = useState([]);
 
  const assistenciaTecnicaList = [
 
@@ -96,131 +95,119 @@ export default function CadListAssitenciaTecnica({navigation}) {
   
       },
 
- ]
+ ];
 
- let onPressItem = (name) => {
- {/*
- navigation.navigate("Forms")*/}
-alert('Serviço selececionado : ' + name)
- }
+ const onPressItem = (id) => {
+  const alreadySelected = selectedItems.includes(id);
+  if (alreadySelected) {
+    setSelectedItems(selectedItems.filter(selectedId => selectedId !== id));
+  } else {
+    setSelectedItems([...selectedItems, id]);
+  }
+};
 
- const oneService = ( {item} ) => (
-  
-    <TouchableOpacity onPress={() => onPressItem(item.name)}>
-  <View style = {styles.item}>
-  <Text style = {styles.name}>{item.name}</Text>
-  </View>
+const handleFinish = async () => {
+  const userData = {
+    ...formData,
+    typeOfPerson: 'TECHNICIAN',
+    technicianServices: selectedItems.join(',') // IDs dos serviços selecionados
+  };
 
+  try {
+    const response = await axios.post('http://18.188.75.46:8080/users', userData);
+    if (response.status === 200 || response.status === 201) {
+      Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
+      navigation.navigate("LoguinTech");
+    } else {
+      Alert.alert("Erro", "Não foi possível realizar o cadastro.");
+    }
+  } catch (error) {
+    console.error("Erro ao realizar cadastro:", error);
+    Alert.alert("Erro", "Ocorreu um erro ao realizar o cadastro.");
+  }
+};
+
+const oneService = ({ item }) => (
+  <TouchableOpacity onPress={() => onPressItem(item.id)}>
+    <View style={[styles.item, selectedItems.includes(item.id) ? styles.itemSelected : null]}>
+      <Text style={styles.name}>{item.name}</Text>
+    </View>
   </TouchableOpacity>
-  )
-  
+);
+
+const headerComponent = () => (
+  <Text style={styles.lisHeadline}>Serviços Assistência Técnica</Text>
+);
+
+const itemSeparator = () => (
+  <View style={styles.separator} />
+);
+
+return (
+  <SafeAreaView style={styles.container}>
+    <FlatList
+      ListHeaderComponent={headerComponent}
+      data={assistenciaTecnicaList}
+      renderItem={oneService}
+      ItemSeparatorComponent={itemSeparator}
+      keyExtractor={item => item.id.toString()}
+    />
+    <View style={styles.confirmationContainer}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleFinish}
+      >
+        <Text style={styles.buttonText}>Finalizar Cadastro</Text>
+      </TouchableOpacity>
+    </View>
+  </SafeAreaView>
+);
+}
 
 
-
-
-
-  headerComponent = () => {
-
-    return <Text style = {styles.lisHeadline}>Serviços Assistência Técnica</Text>
-  }
-  
-  itemSeparator = () => {
-    return <View style = {styles.separator} />
-  }
-  
-    return (
-      <SafeAreaView >
-       
-        <FlatList
-        ListHeaderComponentStyle = {styles.listHeader}
-        ListHeaderComponent={headerComponent}
-       data = {assistenciaTecnicaList}
-       renderItem = {oneService} 
-       
-       ItemSeparatorComponent = {itemSeparator}
-      
-     
-       />
-
-<View
-                style={{
-                  width: "90%",
-                  alignSelf: "center",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginBottom: 30,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => {
-                    navigation.navigate('LoguinTech')
-                  }}
-                >
-                  <Text
-                    style={{ color: "white", fontSize: 20, fontWeight: "700" }}
-                  >
-                    confirmar
-                  </Text>
-                </TouchableOpacity>
-                
-              </View>
-
-        </SafeAreaView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    listHeader:{
-   height: 70,
-   alignItems: 'center',
-   justifyContent: 'center',
-   backgroundColor: '#3B5998',
-   
-    },
-   lisHeadline:{
+const styles = StyleSheet.create({
+container: {
+  flex: 1,
+},
+lisHeadline: {
   color: '#FFF',
   fontSize: 21,
   fontWeight: 'bold',
-  
-  
-  
-   },
-   item:{
-  flex: 1,
+  padding: 20,
+  textAlign: 'center',
+  backgroundColor: '#3B5998',
+},
+item: {
   flexDirection: 'row',
   alignItems: 'center',
   paddingVertical: 10,
-
-  
-   },
-  
-   name:{
+  paddingHorizontal: 15,
+},
+itemSelected: {
+  backgroundColor: '#E0E0E0', // Altere para a cor desejada para indicar seleção
+},
+name: {
   fontWeight: 'bold',
-  fontSize:18,
-  marginLeft: 15,
-  
-   },
-   checkboxview: {
-    flexDirection: "row",
-    marginTop: 30,
-    alignItems: "center",
-  },
-  
-    separator: {
-      height: 1,
-      backgroundColor: '#FFF',
-      width: '100%',
-      
-    },
-    button: {
-      height: 38,
-      width: 105,
-      flex:1,
-      backgroundColor: "#3B5998",
-      borderRadius: 15,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-  });
-  
+  fontSize: 18,
+},
+separator: {
+  height: 1,
+  backgroundColor: '#CCC',
+  width: '100%',
+},
+confirmationContainer: {
+  padding: 20,
+},
+button: {
+  backgroundColor: "#3B5998",
+  borderRadius: 15,
+  height: 38,
+  alignItems: "center",
+  justifyContent: "center",
+},
+buttonText: {
+  color: "white",
+  fontSize: 20,
+  fontWeight: "700",
+},
+});
